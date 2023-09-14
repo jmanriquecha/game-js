@@ -5,31 +5,39 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="stylesheet" href="./css/style.css">
+        <script src="https://cdn.tailwindcss.com"></script>
         <title>Platzriv - Jueguito online de carreras y calaveras</title>
     </head>
 
     <body>
-
-        <div class="game-container">
-            <canvas id="game"></canvas>
-
-            <div class="btns">
-                <button id="up">Arriba</button>
-                <button id="left">Izquierda</button>
-                <button id="right">Derecha</button>
-                <button id="down">Abajo</button>
+        <div class="container">
+            <div id="info" class="w-100 h-96 flex flex-col items-center justify-center" play="true">
+                <h1 class="text-center">Bienvenid@ a Super Laberinto</h1>
+                <button id="startGame" class="mt-10"><img src="./img/play-96.png" alt="play"></button>
+                <div id="game-over"></div>
             </div>
+            <div class="game-container hidden" id="gameLoad">
+                <canvas id="game"></canvas>
 
-            <div class="messages">
-                <p>Vidas: <span id="lives"></span></p>
-                <p>Tiempo: <span id="time"></span></p>
-                <p>Record: <span id="record"></span></p>
-                <p id="result"></p>
+                <div class="btns" id="btns">
+                    <button class="bg-green-500 p-4 w-auto hover:bg-green-800" id="up">Arriba</button>
+                    <button class="bg-green-500 p-4 w-auto hover:bg-green-800" id="left">Izquierda</button>
+                    <button class="bg-green-500 p-4 w-auto hover:bg-green-800" id="right">Derecha</button>
+                    <button class="bg-green-500 p-4 w-auto hover:bg-green-800" id="down">Abajo</button>
+                </div>
+
+                <div class="messages">
+                    <p>Vidas: <span id="lives"></span></p>
+                    <p>Tiempo: ⌚<span id="time"></span></p>
+                    <p>Record: 🏁<span id="record"></span></p>
+                    <p id="result"></p>
+                </div>
             </div>
         </div>
 
         <script defer src="./js/maps.js"></script>
         <script defer src="./js/game.js"></script>
+
     </body>
 
 </html>
