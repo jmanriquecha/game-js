@@ -48,14 +48,16 @@ window.addEventListener('keydown', fnPress);
 
 function setCanvasSize() {
     canvasSize = (window.innerHeight > window.innerWidth)
-        ? window.innerWidth * 0.8
-        : window.innerHeight * 0.8;
-
+        ? window.innerWidth * 0.7
+        : window.innerHeight * 0.7;
+    canvasSize = Number(canvasSize).toFixed(0);
+    console.log(canvasSize);
     canvas.setAttribute('width', canvasSize);
     canvas.setAttribute('height', canvasSize);
 
     elementSize = canvasSize / 10;
-
+    playerPosition.x = undefined;
+    playerPosition.y = undefined;
     startGame();
 }
 
@@ -183,7 +185,7 @@ function showRecord() {
 }
 
 function fnUp() {
-    if ((playerPosition.y - (elementSize - 1)) < (elementSize)) {
+    if ((playerPosition.y - elementSize) < (elementSize)) {
         console.warn('UPS');
     } else {
         playerPosition.y -= elementSize;
