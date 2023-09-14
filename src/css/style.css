@@ -1,5 +1,5 @@
 body {
-    background-color: indigo;
+    background-color: #222;
     color: #fff;  
     font-family: Verdana, Geneva, Tahoma, sans-serif;
     margin: 0;
@@ -54,6 +54,10 @@ body {
     display: block;
     margin: 0;
     width: 100%;
+  }
+
+  .hidden{
+    display:none;
   }
   
   @media (max-width: 440px) {

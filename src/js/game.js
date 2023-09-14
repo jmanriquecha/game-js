@@ -1,5 +1,8 @@
 const canvas = document.getElementById('game');
 const game = canvas.getContext('2d');
+const gameLoad = document.getElementById('gameLoad');
+const btnStartGame = document.getElementById('startGame');
+const divInfo = document.getElementById('info');
 const btnUp = document.getElementById('up');
 const btnLeft = document.getElementById('left');
 const btnRight = document.getElementById('right');
@@ -8,6 +11,7 @@ const spanLives = document.getElementById('lives');
 const spanTime = document.getElementById('time');
 const spanRecord = document.getElementById('record');
 const pResult = document.getElementById('result');
+const btnArrows = document.getElementById('btns');
 
 let canvasSize;
 let elementSize;
@@ -36,26 +40,31 @@ let timeStart;
 let timePlayer;
 let timeInterval;
 
-window.addEventListener('load', setCanvasSize);
-window.addEventListener('resize', setCanvasSize);
-// Click en los botones
-btnUp.addEventListener('click', fnUp);
-btnLeft.addEventListener('click', fnLeft);
-btnRight.addEventListener('click', fnRight);
-btnDown.addEventListener('click', fnDown);
-// Presionando el teclado
-window.addEventListener('keydown', fnPress);
+window.addEventListener('load', info);
+if (gameLoad.getAttribute('class') !== 'game-container hidden') {
+    window.addEventListener('resize', setCanvasSize);
+}
+function info() {
+    gameLoad.classList.add('hidden');
+    btnStartGame.addEventListener('click', setCanvasSize);
+}
 
 function setCanvasSize() {
+    window.addEventListener('resize', setCanvasSize);
+    gameLoad.classList.remove('hidden');
+    divInfo.classList.add('hidden');
+
+    moveArrows();
+
     canvasSize = (window.innerHeight > window.innerWidth)
         ? window.innerWidth * 0.7
         : window.innerHeight * 0.7;
-    canvasSize = Number(canvasSize).toFixed(0);
-    console.log(canvasSize);
+    canvasSize = Number(canvasSize.toFixed(0));
     canvas.setAttribute('width', canvasSize);
     canvas.setAttribute('height', canvasSize);
 
     elementSize = canvasSize / 10;
+    elementSize = Number(elementSize.toFixed());
     playerPosition.x = undefined;
     playerPosition.y = undefined;
     startGame();
@@ -65,9 +74,10 @@ function startGame() {
     showLives();
     game.font = `${elementSize}px Verdana`;
     game.textAlign = 'end';
-    const map = maps[level];
+    let map = maps[level];
 
     if (!map) {
+        level = maps.length - 1;
         gameWin();
         return;
     }
@@ -114,16 +124,18 @@ function startGame() {
 }
 
 function movePlayer() {
-    const giftCollisionX = playerPosition.x.toFixed() == gift.x.toFixed();
-    const giftCollisionY = playerPosition.y.toFixed() == gift.y.toFixed();
+    const giftCollisionX = Number(playerPosition.x.toFixed()) === Number(gift.x.toFixed());
+    const giftCollisionY = Number(playerPosition.y.toFixed()) === Number(gift.y.toFixed());
     const giftCollision = giftCollisionX && giftCollisionY;
+
+    console.log({ giftCollisionX, giftCollisionY });
 
     if (giftCollision) {
         levelWin();
     }
 
     const enemyCollision = enemyPositions.find(function (enemy) {
-        return enemy.x.toFixed() == playerPosition.x.toFixed() && enemy.y.toFixed() == playerPosition.y.toFixed();
+        return Number(enemy.x.toFixed()) == Number(playerPosition.x.toFixed()) && Number(enemy.y.toFixed()) == Number(playerPosition.y.toFixed());
     })
 
     if (enemyCollision) {
@@ -141,22 +153,27 @@ function levelWin() {
 function levelFail() {
     console.warn('Perdiste 😒');
     lives--;
-
     if (lives <= 0) {
         level = 0;
         lives = 3;
         timeStart = undefined;
+        clearInterval(timeInterval);
     }
     playerPosition.x = undefined;
     playerPosition.y = undefined;
     startGame();
 }
+
 function gameWin() {
     const playerTime = (Date.now() - timeStart) / 1000;
     const recordTime = localStorage.getItem('record_time');
 
-    console.log('Terminaste el juego');
+    console.log('Felicitaciones Haz terminado el juego 😁');
     clearInterval(timeInterval);
+    canvas.classList.add('hidden');
+    btnArrows.classList.add('hidden');
+    divInfo.classList.remove('hidden');
+    document.getElementById('game-over').innerHTML = `<img src="./img/gameOver.png" alt="">`;
 
     if (recordTime) {
         if (recordTime > playerTime) {
@@ -184,8 +201,19 @@ function showRecord() {
     spanRecord.innerHTML = localStorage.getItem('record_time');
 }
 
+function moveArrows() {
+    // Click en los botones
+    btnUp.addEventListener('click', fnUp);
+    btnLeft.addEventListener('click', fnLeft);
+    btnRight.addEventListener('click', fnRight);
+    btnDown.addEventListener('click', fnDown);
+    // Presionando el teclado
+    window.addEventListener('keydown', fnPress);
+}
+
 function fnUp() {
-    if ((playerPosition.y - elementSize) < (elementSize)) {
+    console.log(playerPosition.y, playerPosition.x)
+    if ((playerPosition.y - elementSize) < elementSize) {
         console.warn('UPS');
     } else {
         playerPosition.y -= elementSize;
@@ -195,6 +223,7 @@ function fnUp() {
 
 function fnLeft() {
     console.log('Izquierdo');
+    console.log(playerPosition.x);
     if ((playerPosition.x - elementSize) < elementSize) {
         console.warn('UPS');
     } else {
@@ -205,6 +234,7 @@ function fnLeft() {
 
 function fnRight() {
     console.log('Derecho');
+    console.log(playerPosition.x);
     if ((playerPosition.x + elementSize) > canvasSize) {
         console.warn('UPS');
     } else {
@@ -215,6 +245,7 @@ function fnRight() {
 
 function fnDown() {
     console.log('Abajo');
+    console.log(playerPosition.y);
     if ((playerPosition.y + elementSize) > canvasSize) {
         console.warn('UPS');
     } else {
